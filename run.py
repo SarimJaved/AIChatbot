@@ -1,5 +1,4 @@
 import secrets
-
 from server.bp import bp
 from server.website import Website
 from server.backend import Backend_Api
@@ -42,7 +41,10 @@ if __name__ == '__main__':
     # Register the blueprint
     app.register_blueprint(bp, url_prefix=url_prefix)
 
-    # Run the Flask server
+    # Print the server status
     print(f"Running on {site_config['port']}{url_prefix}")
-    app.run(**site_config)
+
+    # Run the Flask server on 0.0.0.0 to allow external access
+    app.run(host='0.0.0.0', port=site_config.get('port', 5000), **site_config)
+
     print(f"Closing port {site_config['port']}")
