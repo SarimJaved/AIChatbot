@@ -1,4 +1,5 @@
 import secrets
+import os  # Import os for environment variables
 from server.bp import bp
 from server.website import Website
 from server.backend import Backend_Api
@@ -42,9 +43,13 @@ if __name__ == '__main__':
     app.register_blueprint(bp, url_prefix=url_prefix)
 
     # Print the server status
-    print(f"Running on {site_config['port']}{url_prefix}")
+    print(f"Running on port {site_config['port']}{url_prefix}")
 
-    # Run the Flask server on 0.0.0.0 to allow external access
-    app.run(host='0.0.0.0', port=site_config.get('port', 5000), **site_config)
+    # Get the port and host from environment variables set by Railway
+    port = int(os.getenv('PORT', site_config.get('port', 5000)))
+    host = os.getenv('HOST', '0.0.0.0')
 
-    print(f"Closing port {site_config['port']}")
+    # Run the Flask app using the environment variables for port and host
+    app.run(host=host, port=port, debug=site_config.get('debug', False))
+
+    print(f"Closing port {port}")
