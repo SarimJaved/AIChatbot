@@ -45,9 +45,9 @@ if __name__ == '__main__':
     # Print the server status
     print(f"Running on port {site_config['port']}{url_prefix}")
 
-    # Get the port and host from environment variables set by Railway
+    # Get the port from environment variables set by Railway
     port = int(os.getenv('PORT', site_config.get('port', 5000)))
-    host = os.getenv('HOST', '0.0.0.0')
+    host = os.getenv('HOST', '0.0.0.0')  # Use '0.0.0.0' to make it accessible externally if needed
 
     # Run the Flask app using the environment variables for port and host
     app.run(host=host, port=port, debug=site_config.get('debug', False))
