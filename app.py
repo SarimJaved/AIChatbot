@@ -1,20 +1,22 @@
+import os
 import secrets
-
+from json import load
+from flask import Flask
 from server.bp import bp
 from server.website import Website
 from server.backend import Backend_Api
 from server.babel import create_babel
-from json import load
-from flask import Flask
 
 if __name__ == '__main__':
-
     # Load configuration from config.json
     config = load(open('config.json', 'r'))
     site_config = config['site_config']
     url_prefix = config.pop('url_prefix')
 
-    # Create the app
+    # Dynamically assign the port from the environment
+    site_config['port'] = int(os.getenv("PORT", site_config.get('port', 3000)))
+
+    # Create the Flask app
     app = Flask(__name__)
     app.secret_key = secrets.token_hex(16)
 
@@ -43,6 +45,6 @@ if __name__ == '__main__':
     app.register_blueprint(bp, url_prefix=url_prefix)
 
     # Run the Flask server
-    print(f"Running on {site_config['port']}{url_prefix}")
-    app.run(**site_config)
+    print(f"Running on port {site_config['port']}{url_prefix}")
+    app.run(host="0.0.0.0", port=site_config['port'], debug=site_config.get('debug', False))
     print(f"Closing port {site_config['port']}")
